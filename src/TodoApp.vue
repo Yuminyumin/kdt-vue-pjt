@@ -40,6 +40,8 @@ export default {
 
         /*
         getTodos 로딩시 
+        get - select
+        
         */
         const getTodos = async () => {
             try{
