@@ -29,43 +29,49 @@
   </div>
 </template>
 
-  
-  <script>
-  import { useRouter } from 'vue-router';
-  export default {
-    props: {
-      todos: {
-        //내려받을 이름
-        type: Array, //데이터 타입
-        required: true, //데이터가 반드시 있어야함
-      },
+<script>
+
+import { useRouter } from 'vue-router';
+
+export default {
+  props: {
+    todos: {
+      //내려받을 이름
+      type: Array, //데이터 타입
+      required: true, //데이터가 반드시 있어야함
     },
-    emits: ["toggle-todo", "delete-todo"],
-    setup(props, context) {
-      const router = useRouter();
-      const moveToView = (todoId) =>{
-        router.push(`todos/${todoId}`);
-      }
-      const todoStyle = {
-        textDecoration: "line-through",
-        color: "gray",
-      };
-      //toggle-todo, delete-todo는 emit을 통해 올릴 데이터의 이름
-      const toggleTodo = (index) => {
-        context.emit("toggle-todo", index);
-      };
-      const onDelete = (index) => {
-        context.emit("delete-todo", index);
-      };
-      return {
-        todoStyle,
-        toggleTodo,
-        onDelete,
-        moveToView
-      };
-    },
-  };
-  </script>
-  
-  <style></style>
-  
+  },
+  emits: ["toggle-todo", "delete-todo"],
+  setup(props, context) {
+    const router = useRouter();
+    const moveToView = (todoId) =>  {
+      //router.push(`/todos/${todoId}`);
+      router.push({
+        name : 'Todo',
+        params : {
+          id : todoId
+        }
+      });
+  }
+    const todoStyle = {
+      textDecoration: "line-through",
+      color: "gray",
+    };
+    //toggle-todo, delete-todo는 emit을 통해 올릴 데이터의 이름
+    const toggleTodo = (index) => {
+      context.emit("toggle-todo", index);
+    };
+    const onDelete = (index) => {
+      context.emit("delete-todo", index);
+    };
+    return {
+      todoStyle,
+      toggleTodo,
+      onDelete,
+      moveToView
+    };
+  },
+};
+</script>
+
+<style></style>

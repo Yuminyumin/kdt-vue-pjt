@@ -1,15 +1,15 @@
 <template>
   <div class="container">
-    Todos Landing Page
+      Todos Landing Page..
   </div>
 </template>
 
 <script>
-export default {
-    setup(){
-        
-    }
-}
+  export default {
+      setup(){
+
+      }
+  }
 </script>
 
 <style>
