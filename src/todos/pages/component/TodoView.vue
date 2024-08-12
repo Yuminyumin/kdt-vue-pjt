@@ -26,15 +26,26 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="col-12">
+                <div class="form-group">
+                    <label>Body</label>
+                    <textarea v-model="todo.body" class="form-control" cols="30" rows="10"></textarea>
+                </div> 
+            </div>
+
 			<button class="btn btn-outline-dark" type="submit" :disabled="!todoUpdated">Update</button>
 			<!-- cancel 버튼 클릭 시 path /todos 연결된 컴포넌트로 화면전환 -->
 			<button class="btn btn-outline-danger ml-2" @click.stop="moveToTodos">
 				Cancel
 			</button>
 		</form>
-        <Alert v-if="showAlert"
-                :message="alertMsg"
-                :type="alertType"/>
+		<tramsition name="fade">
+			<Alert  v-if="showAlert"
+					:message="alertMsg"
+					:type="alertType"/>
+			</tramsition>
+        
 	</div>
 </template>
 
@@ -102,18 +113,16 @@ export default {
 		};
 
 		const onUpdate = async () => {
-			const updateData = {
-				completed: todo.value.completed,
-				subject: todo.value.subject,
-			};
 			try {
-				const response = await axios.patch(
-					`todos/${route.params.id}`,
-					updateData
-				);
-				console.log(response.data);
-				//moveToTodos();
-                triggerAlert('Successfully updated');
+				console.log("debug >>> onUpdate, ",route.params.id);
+				
+				await axios.patch(`todos/${route.params.id}`,{
+					completed: todo.value.completed,
+					subject: todo.value.subject,
+					body : todo.value.body,
+				});
+				moveToTodos();
+                // triggerAlert('Successfully updated');
 			} catch (error) {
 				console.log(error);
                 triggerAlert('Something went wrong...', 'danger');
@@ -151,4 +160,19 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+	.fade-enter-active,
+	.fade-leave-active{
+		transition: all 0.5s ease;
+	}
+	.fade-enter-from,
+	.fade-leave-to{
+		opacity: 1;
+		transform: translateY(-30px);
+	}
+	.fade-enter-to,
+	.fade-leave-from{
+		opacity: 1;
+		transform: translateY(-30px);
+	}
+</style>
