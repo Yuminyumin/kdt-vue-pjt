@@ -40,27 +40,28 @@ export default {
         let user = ref({});
         const router = useRouter();
         const onLogin = async () => {
-            console.log("Debug>>> login create btn click");
+            console.log("debug >>> login create btn click") ; 
             try {
-                // const data = {
-                //     id : user.value.id,
-                //     password : user.value.password
-                // };
-                let response = await axios.get(`users?id=${user.value.id}&password=${user.value.password}`);
-                console.log("login response data,",response.data);
-                user = response.data;
+                // db.json 통신하고 정상적인 상황이면 router push 이용해서 화면 전환(todos)
+                let response = await axios.get(`users` , {
+                    params : {
+                        id: user.value.id,
+                        password: user.value.password
+                    }
+                });
+                if (response.data.length > 0) {
+                    alert('Login successful!');
+                }
+                user.value = response.data[0] ;
                 
                 router.push({
-				name: 'Home',
-                params : {
-                    "user" : user
-                }
-			});
-            } catch (error){
-                console.log(error);
+                    name: 'Todos',
+                });
+            } catch( err ) {
+                console.log( err );
             }
         }
-
+        
 
         return{
             user,

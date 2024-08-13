@@ -1,3 +1,4 @@
+
 <template>
 	<div class="container">
 		<h2>Todo Read View</h2>
@@ -26,26 +27,35 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="col-12">
-                <div class="form-group">
-                    <label>Body</label>
-                    <textarea v-model="todo.body" class="form-control" cols="30" rows="10"></textarea>
-                </div> 
-            </div>
-
-			<button class="btn btn-outline-dark" type="submit" :disabled="!todoUpdated">Update</button>
+				<div class="form-group">
+					<label>Body</label>
+					<textarea
+						v-model="todo.body"
+						class="form-control"
+						cols="30"
+						rows="10"
+					></textarea>
+				</div>
+			</div>
+			<button
+				class="btn btn-outline-dark mt-2"
+				type="submit"
+				:disabled="!todoUpdated"
+			>
+				Update
+			</button>
 			<!-- cancel 버튼 클릭 시 path /todos 연결된 컴포넌트로 화면전환 -->
-			<button class="btn btn-outline-danger ml-2" @click.stop="moveToTodos">
+			<button
+				class="btn btn-outline-danger mt-2 ms-2"
+				@click.stop="moveToTodos"
+			>
 				Cancel
 			</button>
 		</form>
-		<tramsition name="fade">
-			<Alert  v-if="showAlert"
-					:message="alertMsg"
-					:type="alertType"/>
-			</tramsition>
-        
+		<transition name="fade">
+			<Alert v-if="showAlert" :message="alertMsg" :type="alertType" />
+		</transition>
 	</div>
 </template>
 
@@ -54,19 +64,18 @@ import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 import { ref, computed } from "vue";
 import axios from "@/axios";
-import _ from 'lodash';
-import Alert from '@/components/alert/AlertComponent.vue';
-import { useToast } from '@/composables/toast.js';
+import _ from "lodash";
+import Alert from "@/components/alert/AlertComponent.vue";
+import { useToast } from "@/composables/toast.js";
 
 export default {
-    components : {
-        Alert,
-    },
+	components: {
+		Alert,
+	},
 
 	setup() {
 		const route = useRoute(); //route.params.
 		const router = useRouter(); //push() tramsition
-
 
 		console.log("debug>>> TodoView params, ", route.params);
 		console.log("debug>>> TodoView params.id, ", route.params.id);
@@ -79,31 +88,29 @@ export default {
 		};
 		const loading = ref(true);
 		const todo = ref(null);
-        const originalTodo = ref(null);
+		const originalTodo = ref(null);
 
-        const {
-            showAlert, alertMsg, alertType, triggerAlert
-        } = useToast();
+		const { showAlert, alertMsg, alertType, triggerAlert } = useToast();
 
-        // // alert 구현을 위한 변수
-        // const showAlert = ref(false);
-        // const alertMsg = ref('');
-        // const alertType = ref('');
+		// // alert 구현을 위한 변수
+		// const showAlert = ref(false);
+		// const alertMsg = ref('');
+		// const alertType = ref('');
 
-        // const triggerAlert = (message, type = 'success') => {
-        //     showAlert.value = true;
-        //     alertMsg.value = message;
-        //     alertType.value= type;
-        //     setTimeout(()=>{
-        //         showAlert.value = false;
-        //     alertMsg.value = '';
-        //     alertType.value= '';
-        //     },3000);
-        // }
+		// const triggerAlert = (message, type = 'success') => {
+		//     showAlert.value = true;
+		//     alertMsg.value = message;
+		//     alertType.value= type;
+		//     setTimeout(()=>{
+		//         showAlert.value = false;
+		//     alertMsg.value = '';
+		//     alertType.value= '';
+		//     },3000);
+		// }
 
-        const todoUpdated = computed(()=>{
-            return !_.isEqual(todo.value, originalTodo.value)
-        });
+		const todoUpdated = computed(() => {
+			return !_.isEqual(todo.value, originalTodo.value);
+		});
 		/*
         button 이벤트에 의해서 호출되는 함수
         이벤트 핸들러에서 todo의 completed 값을 변경하는 구현
@@ -113,35 +120,36 @@ export default {
 		};
 
 		const onUpdate = async () => {
+			const updateData = {
+				completed: todo.value.completed,
+				subject: todo.value.subject,
+				body : todo.value.body
+			};
 			try {
-				console.log("debug >>> onUpdate, ",route.params.id);
-				
-				await axios.patch(`todos/${route.params.id}`,{
-					completed: todo.value.completed,
-					subject: todo.value.subject,
-					body : todo.value.body,
-				});
+				const response = await axios.patch(
+					`todos/${route.params.id}`,
+					updateData
+				);
+				console.log(response.data);
 				moveToTodos();
-                // triggerAlert('Successfully updated');
+				triggerAlert("Successfully updated");
 			} catch (error) {
 				console.log(error);
-                triggerAlert('Something went wrong...', 'danger');
+				triggerAlert("Something went wrong...", "danger");
 			}
 		};
 
 		const getTodo = async () => {
 			try {
-				const response = await axios.get(
-					`todos/${route.params.id}`
-				);
+				const response = await axios.get(`todos/${route.params.id}`);
 				console.log(response.data);
-				todo.value = {...response.data};
-                originalTodo.value = {...response.data};
+				todo.value = { ...response.data };
+				originalTodo.value = { ...response.data };
 				loading.value = false;
-                triggerAlert('Successfully get Todo');
+				triggerAlert("Successfully get Todo");
 			} catch (error) {
 				console.log(error);
-                triggerAlert('Something went wrong...', 'danger');
+				triggerAlert("Something went wrong...", "danger");
 			}
 		};
 		getTodo();
@@ -151,10 +159,10 @@ export default {
 			moveToTodos,
 			toggleState,
 			onUpdate,
-            todoUpdated,
-            showAlert,
-            alertMsg,
-            alertType
+			todoUpdated,
+			showAlert,
+			alertMsg,
+			alertType,
 		};
 	},
 };
@@ -163,16 +171,16 @@ export default {
 <style>
 	.fade-enter-active,
 	.fade-leave-active{
-		transition: all 0.5s ease;
+		transition: all 0.5s ease ;
 	}
 	.fade-enter-from,
 	.fade-leave-to{
-		opacity: 1;
-		transform: translateY(-30px);
+		opacity : 1;
+		transform :translateY(-30px);
 	}
 	.fade-enter-to,
 	.fade-leave-from{
-		opacity: 1;
-		transform: translateY(-30px);
+		opacity : 1;
+		transform :translateY(-30px);
 	}
 </style>
